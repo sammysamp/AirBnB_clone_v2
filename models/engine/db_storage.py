@@ -12,8 +12,9 @@ from models.review import Review
 from models.amenity import Amenity
 # from models import *
 
+
 class DBStorage:
-    """New engine DBStorage"""  
+    """New engine DBStorage"""
     __engine = None
     __session = None
 
@@ -26,11 +27,11 @@ class DBStorage:
 
         self.__engine = create_engine(
             'mysql+mysqldb://{}:{}@{}/{}'.format(
-                user, pwd, host, db),pool_pre_ping=True)
-    
+                user, pwd, host, db), pool_pre_ping=True)
+
         if env == 'test':
             Base.metadata.drop_all(self.__engine)
-        
+
     def all(self, cls=None):
         """ Show all class objects in DB storage or specified class """
         from models.state import State
@@ -47,7 +48,7 @@ class DBStorage:
                 key = "{}.{}".format(type(k).__name__, k.id)
                 my_dict[key] = k
         return my_dict
-    
+
     def new(self, obj):
         '''Create a new object'''
         self.__session.add(obj)
@@ -60,16 +61,15 @@ class DBStorage:
         """delete object obj """
         if obj is not None:
             self.__session.delete(obj)
-    
+
     def reload(self):
         """ Create database in Alchemy"""
         Base.metadata.create_all(self.__engine)
         Session = sessionmaker()
         Session.configure(bind=self.__engine)
-        #Session = sessionmaker(bind=self.__engine, expire_on_commit=False)
-        #Session = scoped_session(Session)
+        # Session = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        # Session = scoped_session(Session)
         self.__session = Session()
-        
 
     def close(self):
         """ Close Session """
